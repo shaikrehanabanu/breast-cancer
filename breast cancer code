@@ -1,0 +1,324 @@
+# Importing necessary libraries for data analysis, visualization, machine learning, and model evaluation.
+
+# Data manipulation and analysis:
+import numpy as np
+import pandas as pd
+
+# Data visualization:
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
+from scipy.special import expit  # Sigmoid function
+
+# Dataset for demonstration:
+from sklearn.datasets import load_breast_cancer
+
+# Data preprocessing:
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Machine learning models:
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+
+# Model evaluation metrics:
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix, RocCurveDisplay
+from sklearn.metrics import classification_report
+
+# Model selection and hyperparameter tuning:
+from sklearn.model_selection import GridSearchCV
+le = LabelEncoder()
+for i in df:
+  if df[i].dtype == 'object':
+    df[i] = le.fit_transform(df[i])
+  else:
+    continue
+# Create histograms for individual features
+X.hist(figsize=(20, 20))
+plt.show()
+
+# Create box plots for individual features
+X.plot(kind='box', subplots=True, layout=(8, 5), figsize=(20, 20))
+plt.show()
+# Split the data into training and testing sets (e.g., 80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the StandardScaler
+scaler = StandardScaler()
+
+# Fit the scaler on the training data and transform it
+X_train_scaled = scaler.fit_transform(X_train)
+
+# Transform the testing data using the same scaler
+X_test_scaled = scaler.transform(X_test)
+# Correlation Heatmap of Features.
+
+# Calculate the correlation matrix
+correlation_matrix = X.corr()
+
+# Create the heatmap
+plt.figure(figsize=(20, 20))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Heatmap of Features')
+plt.show()
+# Initialize the Gaussian Naive Bayes model
+model = GaussianNB()
+
+# Train the model on the scaled training data
+model.fit(X_train_scaled, y_train)
+
+# Make predictions on the scaled testing data
+y_pred = model.predict(X_test_scaled)
+
+# Evaluate the model's performance
+accuracy = accuracy_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+print(f"Accuracy: {accuracy:.4f}")
+print(f"Recall: {recall:.4f}")
+print(f"Precision: {precision:.4f}")
+print(f"F1-Score: {f1:.4f}")
+
+# Display the confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(cm)
+
+# Display the ROC curve
+RocCurveDisplay.from_estimator(model, X_test_scaled, y_test)
+plt.show()
+print(classification_report(y_test, y_pred))
+
+# Calculate and print the F1 score
+f1 = f1_score(y_test, y_pred)
+print(f"F1-Score: {f1:.4f}")
+# Create the confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Plot the confusion matrix using seaborn
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", # Now 'sns' is defined and can be used
+            xticklabels=['Predicted 0', 'Predicted 1'],
+            yticklabels=['Actual 0', 'Actual 1'])
+plt.title('Gaussian Naive Bayes Confusion Matrix')
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.show()
+#Get parameters
+print(model.get_params())
+# Initialize the SVM model
+svm_model = SVC(kernel='linear', random_state=42)  # You can choose different kernels (e.g., 'rbf', 'poly')
+
+# Train the model on the scaled training data
+svm_model.fit(X_train_scaled, y_train)
+
+# Make predictions on the scaled testing data
+y_pred_svm = svm_model.predict(X_test_scaled)
+# Evaluate the SVM model's performance
+accuracy_svm = accuracy_score(y_test, y_pred_svm)
+recall_svm = recall_score(y_test, y_pred_svm)
+precision_svm = precision_score(y_test, y_pred_svm)
+f1_svm = f1_score(y_test, y_pred_svm)
+
+print(f"SVM Accuracy: {accuracy_svm:.4f}")
+print(f"SVM Recall: {recall_svm:.4f}")
+print(f"SVM Precision: {precision_svm:.4f}")
+print(f"SVM F1-Score: {f1_svm:.4f}")
+# Display the confusion matrix for SVM
+cm_svm = confusion_matrix(y_test, y_pred_svm)
+print("SVM Confusion Matrix:")
+print(cm_svm)
+
+# Display the ROC curve for SVM
+RocCurveDisplay.from_estimator(svm_model, X_test_scaled, y_test)
+plt.show()
+print(classification_report(y_test, y_pred_svm))
+# Calculate and print the F1 score for SVM
+f1_svm = f1_score(y_test, y_pred_svm)
+print(f"SVM F1-Score: {f1_svm:.4f}")
+# Create the confusion matrix for SVM
+cm_svm = confusion_matrix(y_test, y_pred_svm)
+
+# Plot the confusion matrix using seaborn for SVM
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm_svm, annot=True, fmt="d", cmap="Blues",
+            xticklabels=['Predicted 0', 'Predicted 1'],
+            yticklabels=['Actual 0', 'Actual 1'])
+plt.title('SVM Confusion Matrix')
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.show()
+# Define the parameter grid to search for SVM
+param_grid_svm = {'C': [0.1, 1, 10, 100],
+                  'gamma': [1, 0.1, 0.01, 0.001],
+                  'kernel': ['linear', 'rbf', 'poly']}
+
+# Create a GridSearchCV object for SVM
+grid_search_svm = GridSearchCV(estimator=SVC(random_state=42), param_grid=param_grid_svm, cv=5, scoring='accuracy', n_jobs=-1)
+
+# Fit the grid search to the training data for SVM
+grid_search_svm.fit(X_train_scaled, y_train)
+print(f"Best SVM parameters: {grid_search_svm.best_params_}")
+print(f"Best SVM Accuracy score: {grid_search_svm.best_score_:.4f}")
+# Get the best SVM model from the grid search
+best_svm_model = grid_search_svm.best_estimator_
+
+# Evaluate the best SVM model on the test set
+y_pred_svm_best = best_svm_model.predict(X_test_scaled)
+
+# Print the classification report for the best SVM model
+print(classification_report(y_test, y_pred_svm_best))
+
+# Print the accuracy score for the best SVM model
+accuracy_svm_best = accuracy_score(y_test, y_pred_svm_best)
+print(f"Best SVM Model Accuracy: {accuracy_svm_best:.4f}")
+
+# Print the F1 score for the best SVM model
+f1_svm_best = f1_score(y_test, y_pred_svm_best)
+print(f"Best SVM Model F1-Score: {f1_svm_best:.4f}")
+# 4. Feature Importance :
+#    - Bar chart showing the importance of different features in the dataset based on the chosen model (e.g., feature weights in linear SVM).
+#    - This helps identify the most relevant features for predicting the target variable.
+
+# Get the feature importances from the linear SVM model
+if hasattr(best_svm_model, 'coef_'):
+  feature_importances = np.abs(best_svm_model.coef_[0])  # Use absolute values for easier visualization
+  feature_names = breast_cancer_data.feature_names
+
+  # Create a DataFrame for easier sorting and plotting
+  feature_importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importances})
+  feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+
+  # Create the bar chart
+  plt.figure(figsize=(12, 6))
+  plt.bar(feature_importance_df['Feature'], feature_importance_df['Importance'])
+  plt.xlabel('Feature')
+  plt.ylabel('Importance')
+  plt.title('Feature Importance (Linear SVM)')
+  plt.xticks(rotation=90)
+  plt.tight_layout()
+  plt.show()
+else:
+  print("Feature importance is not available for this model.")
+# Separate plots for each metrics (in %) of the 2 models
+
+# accuracy, recall, precision, f1 (for Naive Bayes)
+# accuracy_svm_best, recall_svm, precision_svm, f1_svm_best (for SVM)
+
+metrics = ['Accuracy', 'Recall', 'Precision', 'F1-Score']
+naive_bayes_scores = [accuracy * 100, recall * 100, precision * 100, f1 * 100]
+svm_scores = [accuracy_svm_best * 100, recall_svm * 100, precision_svm * 100, f1_svm_best * 100]
+
+
+for i in range(len(metrics)):
+    plt.figure(figsize=(6, 4))  # Adjust figure size if needed
+    plt.bar(['Naive Bayes', 'SVM'], [naive_bayes_scores[i], svm_scores[i]], color=['skyblue', 'lightcoral'])
+    plt.title(f'{metrics[i]} Comparison of both models (in %)')
+    plt.ylabel('Score (%)')
+    plt.ylim(0, 110)  # Set y-axis limit for percentage
+
+    # Add score values on top of the bars
+    for j, v in enumerate([naive_bayes_scores[i], svm_scores[i]]):
+      plt.text(j, v + 1, f"{v:.1f}%", ha='center', fontsize=10)
+
+    plt.savefig(f'{metrics[i]}_comparison.png') # Save each plot
+    plt.show()
+# prompt: Merge all the above comparisons into a single image and save it
+
+import matplotlib.pyplot as plt
+from PIL import Image
+
+# Assuming the individual plot files are named 'Accuracy_comparison.png', 'Recall_comparison.png', etc.
+filenames = ['Accuracy_comparison.png', 'Recall_comparison.png', 'Precision_comparison.png', 'F1-Score_comparison.png']
+
+# Open the images
+images = [Image.open(fn) for fn in filenames]
+
+# Get the dimensions of the first image
+width, height = images[0].size
+
+# Create a new image with the combined width and height
+combined_image = Image.new('RGB', (width * 2, height * 2))  # Assuming a 2x2 grid
+
+# Paste the individual images onto the combined image
+x_offset = 0
+y_offset = 0
+for i, image in enumerate(images):
+  combined_image.paste(image, (x_offset, y_offset))
+  x_offset += width
+  if (i + 1) % 2 == 0:
+    x_offset = 0
+    y_offset += height
+
+# Save the combined image
+combined_image.save('comparison_plots.png')
+# 2. ROC Curve Comparison:
+# #    - Plot ROC curves for both Gaussian Naive Bayes and SVM models on the same graph.
+# #    - This helps compare the models' ability to distinguish between classes and identify the best model for maximizing true positive rate while minimizing false positive rate.
+
+
+# Get predicted probabilities for both models
+y_pred_proba_gnb = best_model.predict_proba(X_test_scaled)[:, 1]
+y_pred_proba_svm = expit(best_svm_model.decision_function(X_test_scaled))
+
+
+# Calculate ROC curve for Gaussian Naive Bayes
+fpr_gnb, tpr_gnb, _ = roc_curve(y_test, y_pred_proba_gnb)
+roc_auc_gnb = auc(fpr_gnb, tpr_gnb)
+
+# Calculate ROC curve for SVM
+fpr_svm, tpr_svm, _ = roc_curve(y_test, y_pred_proba_svm)
+roc_auc_svm = auc(fpr_svm, tpr_svm)
+
+# Plot ROC curves
+plt.figure(figsize=(8, 6))
+plt.plot(fpr_gnb, tpr_gnb, label='Gaussian Naive Bayes (AUC = %0.2f)' % roc_auc_gnb)
+plt.plot(fpr_svm, tpr_svm, label='SVM (AUC = %0.2f)' % roc_auc_svm)
+plt.plot([0, 1], [0, 1], 'k--')  # Diagonal line representing random guessing
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve Comparison')
+plt.legend(loc='lower right')
+plt.show()
+# 3. Grid Search Performance:
+#    - Plot a line chart showing the ROC AUC score or accuracy against different values of 'var_smoothing' for Gaussian Naive Bayes.
+#    - This helps identify the optimal value for 'var_smoothing' that yields the best performance.
+#    - Similarly, for SVM, plot a line chart showing accuracy against different values of 'C', 'gamma', and 'kernel' for SVM.
+#    - This allows you to visualize how different hyperparameter combinations affect SVM model performance.
+
+# Gaussian Naive Bayes Grid Search Performance
+plt.figure(figsize=(10, 6))
+# Access 'mean_test_score' instead of 'mean_test_roc_auc' because ROC AUC was likely not used as the scoring metric
+plt.plot(param_grid['var_smoothing'], grid_search.cv_results_['mean_test_score'])
+plt.xlabel('var_smoothing')
+plt.ylabel('Accuracy') # Changed ylabel to Accuracy
+plt.title('Gaussian Naive Bayes Grid Search Performance')
+plt.xscale('log')  # Use a logarithmic scale for 'var_smoothing'
+plt.show()
+
+# SVM Grid Search Performance (for 'C' parameter)
+plt.figure(figsize=(10, 6))
+for kernel in ['linear', 'rbf', 'poly']:  # Iterate through different kernels
+  for gamma in [1, 0.1, 0.01, 0.001]:  # Iterate through different gamma values
+    mean_scores = []
+    for c_value in param_grid_svm['C']:
+      # Access 'mean_test_score' which is the default if no specific scoring is provided to GridSearchCV
+      scores = grid_search_svm.cv_results_['mean_test_score'][
+          (grid_search_svm.cv_results_['param_kernel'] == kernel) &
+          (grid_search_svm.cv_results_['param_gamma'] == gamma) &
+          (grid_search_svm.cv_results_['param_C'] == c_value)
+      ]
+      if len(scores) > 0:
+        mean_scores.append(scores[0])
+    if len(mean_scores) > 0:
+      plt.plot(param_grid_svm['C'], mean_scores, label=f'Kernel: {kernel}, Gamma: {gamma}')
+
+
+plt.xlabel('C')
+plt.ylabel('Accuracy')
+plt.title('SVM Grid Search Performance (C Parameter)')
+plt.legend()
+plt.show()
